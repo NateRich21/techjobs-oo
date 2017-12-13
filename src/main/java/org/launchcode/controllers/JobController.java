@@ -1,5 +1,7 @@
 package org.launchcode.controllers;
 
+import org.launchcode.models.Job;
+import org.launchcode.models.Location;
 import org.launchcode.models.forms.JobForm;
 import org.launchcode.models.data.JobData;
 import org.springframework.stereotype.Controller;
@@ -7,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -17,15 +20,16 @@ import javax.validation.Valid;
 @RequestMapping(value = "job")
 public class JobController {
 
-    private JobData jobData = JobData.getInstance();
+        private JobData jobData = JobData.getInstance();
 
-    // The detail display for a given Job at URLs like /job?id=17
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model, int id) {
+        // The detail display for a given Job at URLs like /job?id=17
+        @RequestMapping(value = "", method = RequestMethod.GET)
+        public String index(Model model, @RequestParam int id) {
 
-        // TODO #1 - get the Job with the given ID and pass it into the view
+            Job singleJob = jobData.findById(id);
+            model.addAttribute("job", singleJob);
 
-        return "job-detail";
+            return "job-detail";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
@@ -37,11 +41,15 @@ public class JobController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String add(Model model, @Valid JobForm jobForm, Errors errors) {
 
-        // TODO #6 - Validate the JobForm model, and if valid, create a
-        // new Job and add it to the jobData data store. Then
-        // redirect to the job detail view for the new Job.
+        if (errors.hasErrors()) {
+            return "new-job";
+        }
+        Job newJob = new Job(jobForm.getName(), jobForm.getEmployer(), jobForm.getLocation(),
+                jobForm.getPositionType(), jobForm.getCoreCompetency());
 
-        return "";
+        jobData.add(newJob);
 
+
+        return String.format("redirect:/job?id=%d", newJob.getId());
     }
 }

@@ -16,32 +16,32 @@ import java.util.ArrayList;
 public class JobForm {
 
     @NotNull
-    @Size(min=1, message = "Name may not be empty")
+    @Size(min=1, message = "Name must not be empty")
     private String name;
 
     @NotNull
     private int employerId;
 
-    /*
-        TODO #3 - Included other fields needed to create a job,
-        with correct validation attributes and display names.
-        Don't forget to add getters and setters
-     */
+    @NotNull
+    private Location location;
+    private CoreCompetency coreCompetency;
+    private PositionType positionType;
+    private Employer employer;
 
     private ArrayList<Employer> employers;
     private ArrayList<Location> locations;
     private ArrayList<CoreCompetency> coreCompetencies;
     private ArrayList<PositionType> positionTypes;
 
+
     public JobForm() {
 
         JobData jobData = JobData.getInstance();
 
-        /*
-            TODO #4 - populate the other ArrayList collections needed in the view
-        */
-
-        employers = jobData.getEmployers().findAll();
+        this.employers = jobData.getEmployers().findAll();
+        this.locations = jobData.getLocations().findAll();
+        this.coreCompetencies = jobData.getCoreCompetencies().findAll();
+        this.positionTypes = jobData.getPositionTypes().findAll();
 
     }
 
@@ -59,6 +59,38 @@ public class JobForm {
 
     public void setEmployerId(int employerId) {
         this.employerId = employerId;
+    }
+
+    public Employer getEmployer() { return employer; }
+
+    public void setEmployer(int employerId) {
+        for (Employer anEmployer : employers) {
+           if (anEmployer.getId() == (employerId)) {
+               employer = anEmployer;
+           }
+        }
+    }
+
+    public Location getLocation() { return location; }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public CoreCompetency getCoreCompetency() {
+        return coreCompetency;
+    }
+
+    public void setCoreCompetency(CoreCompetency coreCompetency) {
+        this.coreCompetency = coreCompetency;
+    }
+
+    public PositionType getPositionType() {
+        return positionType;
+    }
+
+    public void setPositionType(PositionType positionType) {
+        this.positionType = positionType;
     }
 
     public ArrayList<Employer> getEmployers() {
